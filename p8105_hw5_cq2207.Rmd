@@ -52,9 +52,15 @@ iris_filled = map(iris_with_missing, fx_fill) %>%
 prob2_data =
   list.files("./datasets/", pattern = ".csv", full.names = TRUE) 
 
-data_complete = 
-prob2_data %>%
-  map_df(read.csv) 
+data_complete = prob2_data %>%
+  map_df(read.csv) %>%
+  mutate(file_name = tools::file_path_sans_ext(basename(prob2_data))) %>%
+  mutate(
+    subject_id = c(1:20), 
+    study_arm = ifelse(subject_id == c(1:10), "control", "experimental")
+  ) %>%
+ select(subject_id, study_arm, file_name, everything()) %>%
+select(-file_name) #used name of file to ensure observations were coded correctly as control/experimental
   
 
 ```
