@@ -49,5 +49,13 @@ iris_filled = map(iris_with_missing, fx_fill) %>%
 
 ```{r Problem2}
 
+prob2_data =
+  list.files("./datasets/", pattern = ".csv", full.names = TRUE) 
+
+data_complete = 
+prob2_data %>%
+  map_df(read.csv) 
+  
+
 ```
 
