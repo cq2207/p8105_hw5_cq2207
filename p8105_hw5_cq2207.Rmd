@@ -13,7 +13,6 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(rvest)
 library(ggplot2)
-library(patchwork)
 
 set.seed(10)
 
@@ -174,42 +173,36 @@ As effect size incerases, power also incerases. There is a positive relationship
 
 
 5) 
-a. Make a plot showing the average estimate of β̂ 1 on the y axis and the true value of β1 on the x axis. 
-b. Make a second plot (or overlay on the first) the average estimate of β̂ 1 only in samples for which the null was rejected on the y axis and the true value of β1 on the x axis. 
+ _a. Make a plot showing the average estimate of β̂ 1 on the y axis and the true value of β1 on the x axis_.
+ 
+ _b. Make a second plot (or overlay on the first) the average estimate of β̂ 1 only in samples for which the null was rejected on the y axis and the true value of β1 on the x axis._
 
 
 ```{r - problem3-plots}
 
-data_plot1 = sim_results2 %>%
+plot1 = sim_results2 %>%
   group_by(beta_1) %>%
   summarize(mean_b1 = mean(beta1_hat)) 
 
-plot1 = ggplot(data = data_plot1, aes(x = beta_1, y = mean_b1)) +
-  geom_point(size = 2, color = "red") +
-  labs(
-    title = "Average Estimate of Beta 1 by True Value of Beta 1 ",
-    x="True Value of Beta 1", 
-    y="Average Estimate of Beta 1") + 
-  theme_minimal()
-
-data_plot2 = sim_results2 %>%
+plot2 = sim_results2 %>%
   mutate(reject = ifelse(p_value < 0.05, "yes", "no"), reject = as.factor(reject)) %>%
   group_by(beta_1, reject) %>%
   summarize(mean_b1 = mean(beta1_hat)) %>%
   filter(reject == "yes") 
 
-plot2 = ggplot(data = data_plot2, aes(x = beta_1, y = mean_b1)) +
-  geom_point(size = 2) +
+ggplot(data = plot1, aes(x = beta_1, y = mean_b1, color = "All")) +
+  geom_point(size = 2) + geom_point(data = plot2, aes(x = beta_1, y = mean_b1, color = "Rejected"), size = 2) +
+  scale_colour_discrete(name="Sample",
+                            breaks=c("All", "Rejected"),
+                            labels=c("All Beta 1", "Beta 1 Where Null is Rejected")) +
   labs(
     title = "Average Estimate of Beta 1 by True Value of Beta 1 ",
     x="True Value of Beta 1", 
     y="Average Estimate of Beta 1") + 
   theme_minimal()
 
-
-plot1 + plot2
-
 ```
 
-c. Is the sample average of β̂ 1 across tests for which the null is rejected approximately equal to the true value of β1? Why or why not?
+_c. Is the sample average of β̂ 1 across tests for which the null is rejected approximately equal to the true value of β1? Why or why not?_
 
+The graph above shows a discrepancy between the average Beta 1 estimate across tests for which the null is rejected and when the true valeu of Beta 1. When the null is rejected the average estimate of Beta 1 is higher, that is, the effect size for that subset is larger than for the full sample. The difference is greater for the smaler values of Beta 1 and decreases as Beta 1 increases, because the null is rejected more frequently at larger effect sizes.  
