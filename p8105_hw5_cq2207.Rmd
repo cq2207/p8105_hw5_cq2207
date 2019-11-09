@@ -172,4 +172,33 @@ sim_results2 %>%
 As effect size incerases, power also incerases. There is a positive relationship between the two measures.
 
 
-5) Make a plot showing the average estimate of β̂ 1 on the y axis and the true value of β1 on the x axis. Make a second plot (or overlay on the first) the average estimate of β̂ 1 only in samples for which the null was rejected on the y axis and the true value of β1 on the x axis. Is the sample average of β̂ 1 across tests for which the null is rejected approximately equal to the true value of β1? Why or why not?
+5) 
+a. Make a plot showing the average estimate of β̂ 1 on the y axis and the true value of β1 on the x axis. 
+b. Make a second plot (or overlay on the first) the average estimate of β̂ 1 only in samples for which the null was rejected on the y axis and the true value of β1 on the x axis. 
+c. Is the sample average of β̂ 1 across tests for which the null is rejected approximately equal to the true value of β1? Why or why not?
+
+```{r - problem3-plots}
+data_plot1 = 
+sim_results2 %>%
+  group_by(beta_1) %>%
+  summarize(mean_b1 = mean(beta1_hat)) 
+
+data_plot1 %>%
+  ggplot(aes(x = beta_1, y = mean_b1)) +
+  geom_point(size = 2, color = "red") +
+  labs(
+    title = "Average Estimate of Beta 1 by True Value of Beta 1 ",
+    x="True Value of Beta 1", 
+    y="Average Estimate of Beta 1") + 
+  theme_minimal()
+
+data_plot2 = 
+   sim_results2 %>%
+   mutate(reject = ifelse(p_value < 0.05, "yes", "no"), reject = as.factor(reject)) %>%
+  filter(reject == "yes") 
+  
+
+```
+
+
+
