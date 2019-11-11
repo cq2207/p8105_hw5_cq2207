@@ -129,6 +129,7 @@ sim_results
 
 ```{r problem3-part1}
 b1_values = list( 
+              "b1_0" = 0,
               "b1_1" = 1, 
               "b1_2" = 2, 
               "b1_3" = 3,
@@ -138,7 +139,7 @@ b1_values = list(
               )
 
 sim_results2 = 
-  tibble(beta_1 = c(1,2,3,4,5,6)) %>% 
+  tibble(beta_1 = c(0,1,2,3,4,5,6)) %>% 
   mutate(
     output_lists = map(.x = b1_values, ~rerun(10000, sim_regression(beta1 = .x))),
     estimate_dfs = map(output_lists, bind_rows)) %>% 
